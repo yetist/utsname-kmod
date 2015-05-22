@@ -3,8 +3,8 @@ linux kernel module to use sysfs for read/write uname
 
 # Compile
 
-make
-make modules_install
+    make
+    make modules_install
 
 # Usage
 
