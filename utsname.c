@@ -11,14 +11,17 @@
 # define uname_uts_attrib(attrib) system_utsname.attrib
 #endif
 
+#define UTS_NAME_LENGTH sizeof(uname_uts_attrib(sysname))
+
+
 #define store_used(attrib, value) do { \
-	memset(uname_used_ ##attrib, sizeof( uname_used_ ##attrib), '\0'); \
-	memcpy(uname_used_ ##attrib, value, sizeof(uname_used_ ##attrib) -1); \
+	memset(uname_used_ ##attrib, UTS_NAME_LENGTH, '\0'); \
+	memcpy(uname_used_ ##attrib, value, UTS_NAME_LENGTH -1); \
 } while(0)
 
 #define store_kernel(attrib, value) do { \
-	memset(uname_uts_attrib(attrib), sizeof(uname_uts_attrib(attrib)), '\0'); \
-	memcpy(uname_uts_attrib(attrib), value, sizeof(uname_uts_attrib(attrib)) -1); \
+	memset(uname_uts_attrib(attrib), UTS_NAME_LENGTH, '\0'); \
+	memcpy(uname_uts_attrib(attrib), value, UTS_NAME_LENGTH -1); \
 } while (0)
 
 #define store_all(attrib, value) do { \
@@ -30,27 +33,27 @@
 #define define_attribute(name, mode)  name## _attribute = __ATTR( name , mode, uts_node_show, uts_node_store)
 
 /* save original value for uname */
-static char uname_saved_sysname[sizeof(uname_uts_attrib(sysname))];
-static char uname_saved_nodename[sizeof(uname_uts_attrib(nodename))];
-static char uname_saved_release[sizeof(uname_uts_attrib(release))];
-static char uname_saved_version[sizeof(uname_uts_attrib(version))];
-static char uname_saved_machine[sizeof(uname_uts_attrib(machine))];
-static char uname_saved_domainname[sizeof(uname_uts_attrib(domainname))];
+static char uname_saved_sysname[UTS_NAME_LENGTH];
+static char uname_saved_nodename[UTS_NAME_LENGTH];
+static char uname_saved_release[UTS_NAME_LENGTH];
+static char uname_saved_version[UTS_NAME_LENGTH];
+static char uname_saved_machine[UTS_NAME_LENGTH];
+static char uname_saved_domainname[UTS_NAME_LENGTH];
 
 /* current used value for uname */
-static char uname_used_sysname[sizeof(uname_uts_attrib(sysname))];
-static char uname_used_nodename[sizeof(uname_uts_attrib(nodename))];
-static char uname_used_release[sizeof(uname_uts_attrib(release))];
-static char uname_used_version[sizeof(uname_uts_attrib(version))];
-static char uname_used_machine[sizeof(uname_uts_attrib(machine))];
-static char uname_used_domainname[sizeof(uname_uts_attrib(domainname))];
+static char uname_used_sysname[UTS_NAME_LENGTH];
+static char uname_used_nodename[UTS_NAME_LENGTH];
+static char uname_used_release[UTS_NAME_LENGTH];
+static char uname_used_version[UTS_NAME_LENGTH];
+static char uname_used_machine[UTS_NAME_LENGTH];
+static char uname_used_domainname[UTS_NAME_LENGTH];
 
 static ssize_t uts_node_store (struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
 	char sbuf[count];
 	size_t i;
 
-	memcpy(sbuf, buf, sizeof(sbuf));
+	memcpy(sbuf, buf, UTS_NAME_LENGTH);
 
 	for (i = strlen(sbuf); i >= 0; i--) {
 		if (sbuf[i] == '\0') continue;
@@ -121,12 +124,12 @@ static struct kobject *uname_kobj;
 
 static void save_all_uname(void)
 {
-	memcpy(uname_saved_sysname, uname_uts_attrib(sysname), sizeof(uname_saved_sysname));
-	memcpy(uname_saved_nodename, uname_uts_attrib(nodename), sizeof(uname_saved_nodename));
-	memcpy(uname_saved_release, uname_uts_attrib(release), sizeof(uname_saved_release));
-	memcpy(uname_saved_version, uname_uts_attrib(version), sizeof(uname_saved_version));
-	memcpy(uname_saved_machine, uname_uts_attrib(machine), sizeof(uname_saved_machine));
-	memcpy(uname_saved_domainname, uname_uts_attrib(domainname), sizeof(uname_saved_domainname));
+	memcpy(uname_saved_sysname, uname_uts_attrib(sysname), UTS_NAME_LENGTH);
+	memcpy(uname_saved_nodename, uname_uts_attrib(nodename), UTS_NAME_LENGTH);
+	memcpy(uname_saved_release, uname_uts_attrib(release), UTS_NAME_LENGTH);
+	memcpy(uname_saved_version, uname_uts_attrib(version), UTS_NAME_LENGTH);
+	memcpy(uname_saved_machine, uname_uts_attrib(machine), UTS_NAME_LENGTH);
+	memcpy(uname_saved_domainname, uname_uts_attrib(domainname), UTS_NAME_LENGTH);
 }
 
 static void store_all_uname(void)
@@ -146,12 +149,12 @@ static void store_all_uname(void)
 
 static void restore_all_uname(void)
 {
-	memcpy(uname_uts_attrib(sysname), uname_saved_sysname, sizeof(uname_uts_attrib(sysname)));
-	memcpy(uname_uts_attrib(nodename), uname_saved_nodename, sizeof(uname_uts_attrib(nodename)));
-	memcpy(uname_uts_attrib(release), uname_saved_release, sizeof(uname_uts_attrib(release)));
-	memcpy(uname_uts_attrib(version), uname_saved_version, sizeof(uname_uts_attrib(version)));
-	memcpy(uname_uts_attrib(machine), uname_saved_machine, sizeof(uname_uts_attrib(machine)));
-	memcpy(uname_uts_attrib(domainname), uname_saved_domainname, sizeof(uname_uts_attrib(domainname)));
+	memcpy(uname_uts_attrib(sysname), uname_saved_sysname, UTS_NAME_LENGTH);
+	memcpy(uname_uts_attrib(nodename), uname_saved_nodename, UTS_NAME_LENGTH);
+	memcpy(uname_uts_attrib(release), uname_saved_release, UTS_NAME_LENGTH);
+	memcpy(uname_uts_attrib(version), uname_saved_version, UTS_NAME_LENGTH);
+	memcpy(uname_uts_attrib(machine), uname_saved_machine, UTS_NAME_LENGTH);
+	memcpy(uname_uts_attrib(domainname), uname_saved_domainname, UTS_NAME_LENGTH);
 }
 
 static int __init utsname_init_module( void )
